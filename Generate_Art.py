@@ -2,6 +2,7 @@
 from PIL import Image, ImageDraw, ImageChops
 import random
 import colorsys
+import os
 
 # Define a function to generate a random colour
 def random_color():
@@ -44,7 +45,7 @@ def generate_art(path, target_size_px, scale_factor, lines):
     print("Generating Art!")  # This line of code clarifies that the function is active / has been executed properly
     image_size_px = target_size_px * scale_factor # Set image size
     padding_px = 16 * scale_factor # Pad the image
-    image_bg_color = (0, 0, 0, 0) # Set the background to black
+    image_bg_color = (0, 0, 0) # Set the background to black
     start_color = random_color()
     end_color = random_color()
     image = Image.new(
@@ -55,10 +56,11 @@ def generate_art(path, target_size_px, scale_factor, lines):
     points = [] # Set "points" to be an empty list to be used later in the code
 
 # The following lines of code determine the main constraints / conditions for the final image
-    for _ in range(lines):
+    for line in range(lines):
+        line2 = line
         random_point = (
-            random.randint(padding_px, image_size_px - padding_px),
-            random.randint(padding_px, image_size_px - padding_px))
+            line + random.randint(padding_px, image_size_px - padding_px),
+            line2 - random.randint(padding_px, image_size_px - padding_px))
         points.append(random_point)
 
     min_x = min([p[0] for p in points])
@@ -98,12 +100,28 @@ def generate_art(path, target_size_px, scale_factor, lines):
     img = image.save(path, "PNG")
     img = convertImage(path)
 
-# This line of code generates ten randomly generated images
-def start_generator():
-    for i in range(10):
-        size = random.randint(120,150)
-        scale = random.randint(1,5)
-        lines = random.randint(15,50)
-        generate_art("Test_Image_"+str(i)+".png", size, scale, lines)
+# Turns set of images into a GIF
+def createGIF(images):
+    open_images = []
+    for i in range(1,len(images)):
+        img = Image.open(images[i]+".png")
+        open_images.append(img)
 
-start_generator()
+    img = Image.open(images[0]+".png")
+    img.save("out.gif", save_all=True, append_images=open_images, disposal=2, loop=0, duration=200)
+
+    for i in images:
+        os.remove(i+".png")
+
+# This line of code generates ten randomly generated images
+def start_generator(num):
+    images = []
+    for i in range(num):
+        path = "Test_Image_"+str(i)
+        lines = (i + 2) * 5
+        generate_art(path+".png", 120, 2, lines)
+        images.append(path)
+
+    createGIF(images)
+
+start_generator(10)
