@@ -40,6 +40,33 @@ class GameScreen():
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
         self.loop()
 
+    def reset(self):
+        if self.player.health == 0:
+            self.player = Player()
+        else:
+            score = self.player.score
+            self.player = Player()
+            self.player.score = score
+            
+        self.enemy = Enemy("out.gif")
+        sg.theme('Black')
+        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-")]]
+        self.col2 = [
+            [sg.Text("Health: " + str(self.enemy.health), key = '-enemyhealth-')],
+            self.healthBar("EN",self.enemy.health),#0
+            [sg.Text("Enemy Action", key = '-enemyevent-')],
+            [sg.Text("Welcome to the game!", key = '-outcome-')],
+            [sg.Text("Your Action", key = '-playerevent-')],
+            [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
+            [sg.Text("Health: " + str(self.player.health), key = '-playerhealth-')],
+            self.healthBar("US",self.player.health),#5
+            [sg.Button("Reload", key = '-action-')],
+            [sg.Button('Block', key = '-block-')]
+        ]
+        self.layout = [[sg.Column(self.col1)], [sg.Column(self.col2)]]
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
+        self.loop()
+
     def healthBar(self, character, health):
         data = []
         for i in range(4):
@@ -52,6 +79,8 @@ class GameScreen():
         self.window.Element('-IMAGE-').update_animation_no_buffering(self.enemy.path)
         if event == sg.WIN_CLOSED:
             self.window.close()
+        elif event == '-nextenemy-':
+            self.reset()
         else:
             if self.player.armed == None:
                 self.player.armed = False
@@ -101,6 +130,7 @@ class GameScreen():
             self.window['-outcome-'].Update("You lose! Game Over -50\nFinal Score:" + str(self.player.score))
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-nextenemy-'].Update("Play again?")
+            self.window['-nextenemy-'].Update(disabled = False)
             self.window['-action-'].Update(disabled = True)
             self.window['-block-'].Update(disabled = True)
             self.player.block = None
