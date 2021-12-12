@@ -16,22 +16,25 @@ class Player():
         self.health = 4
         self.armed = False
         self.block = False;
+        self.score = 0
 
 class GameScreen():
     def __init__(self):
         self.player = Player()
         self.enemy = Enemy("out.gif")
+        self.round_score = 0
         sg.theme('Black')
         self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-")]]
-        self.col2 = [[sg.Text('Enemy')],
-        self.healthBar("EN",self.enemy.health),
-        [sg.Text("Enemy Action", key = '-enemyevent-')],
-        [sg.Text("Welcome to the game!", key = '-outcome-')],
-        [sg.Text("Your Action", key = '-playerevent-')],
-        [sg.Text('You')],
-        self.healthBar("US",self.player.health),
-        [sg.Button("Reload", key = '-action-')],
-        [sg.Button('Block', key = '-block-')]]
+        self.col2 = [
+            self.healthBar("EN",self.enemy.health),#0
+            [sg.Text("Enemy Action", key = '-enemyevent-')],
+            [sg.Text("Welcome to the game!", key = '-outcome-')],
+            [sg.Text("Your Action", key = '-playerevent-')],
+            [sg.Text('Score: ' + str(self.player.score))],
+            self.healthBar("US",self.player.health),#5
+            [sg.Button("Reload", key = '-action-')],
+            [sg.Button('Block', key = '-block-')]
+        ]
         self.layout = [[sg.Column(self.col1)], [sg.Column(self.col2)]]
         self.window = sg.Window('Window Title', self.layout, finalize = True)
         self.loop()
@@ -73,7 +76,7 @@ class GameScreen():
             self.enemyAction()
 
     def enemyAction(self):
-        action = random.randrange(1,self.enemy.block_tedency)
+        action = random.randrange(1,self.enemy.block_tedency+1)
         if action == self.enemy.block_tedency:
             self.window['-enemyevent-'].Update("Enemy blocked!")
             self.enemy.block = True
@@ -103,13 +106,13 @@ class GameScreen():
         elif self.enemy.block == False and self.player.block == False: #neither block
             if self.enemy.armed == False and self.player.armed == True: #enemy is unarmed, player is armed
                 self.window['-outcome-'].Update("You are hit!") #enemy is hit
-                self.healthBar("EN",self.enemy.health-1)
+                self.col2[0] = self.healthBar("EN",self.enemy.health-1)
                 if self.enemy.health == 0: #enemy dies
                     self.window['-outcome-'].Update("You Won!")
                     self.window['-nextenemy-'].Update("Next Enemy")
             elif self.enemy.armed == True and self.player.armed == False:
                 self.window['-outcome-'].Update("Enemy is hit!")
-                self.healthBar("US",self.player.health-1)
+                self.col2[5] = self.healthBar("US",self.player.health-1)
             elif self.enemy.armed == True and self.player.armed == True:
                 self.window['-outcome-'].Update("")
             else: #both are reloading
