@@ -94,9 +94,11 @@ class GameScreen():
                 self.window['-enemyevent-'].Update("Enemy attacked!")
                 self.enemy.armed = False
 
-    def getHit(self):
-        if (self.player.health - 1) == 0:
+    def playerHit(self):
+        if self.player.health - 1 == 0:
+            self.player.health -= 1
             self.player.score -= 50
+            self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
             self.window['-outcome-'].Update("You lose! Game Over -50\nFinal Score:" + str(self.player.score))
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-nextenemy-'].Update("Play again?")
@@ -112,10 +114,16 @@ class GameScreen():
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
             self.col2[5] = self.healthBar("US",self.player.health)
+            self.player.armed = None
+            self.player.block = None
+            self.enemy.armed = None
+            self.enemy.block = None
 
-    def hit(self):
-        if (self.enemy.health - 1) == 0:
+    def enemyHit(self):
+        if self.enemy.health - 1 == 0:
+            self.enemy.health -= 1
             self.player.score += 20
+            self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
             self.window['-outcome-'].Update("You won! +20\nCurrent score: " + str(self.player.score))
             self.window['-nextenemy-'].Update(disabled = False)
             self.window['-nextenemy-'].Update("Next enemy?")
@@ -132,6 +140,19 @@ class GameScreen():
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
             self.col2[0] = self.healthBar("EN",self.enemy.health)
+            self.player.armed = None
+            self.player.block = None
+            self.enemy.armed = None
+            self.enemy.block = None
+
+    def bothHit(self):
+        if self.player.health - 1 == 0:
+            self.playerHit()
+            self.enemy.health -= 1
+            self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
+        else:
+            self.enemyHit()
+            self.playerHit()
 
 
     def contest(self, event):
@@ -151,16 +172,15 @@ class GameScreen():
         elif self.enemy.block == False and self.player.block == False: #neither block
             if self.enemy.armed == False and self.player.armed == True: #enemy is unarmed, player is armed
                 self.window['-outcome-'].Update("You are hit!") #enemy is hit
-                self.getHit()
+                self.playerHit()
             elif self.enemy.armed == True and self.player.armed == False:
                 self.window['-outcome-'].Update("Enemy is hit!")
-                self.hit()
+                self.enemyHit()
             elif self.enemy.armed == True and self.player.armed == True:
                 self.window['-outcome-'].Update("Both of you reloaded!")
             elif self.enemy.armed == False and self.player.armed == False: #both are reloading
                 self.window['-outcome-'].Update("Both of you are hit!")
-                self.hit()
-                self.getHit()
+                self.bothHit()
             else:
                 self.window['-outcome-'].Update("")
 
