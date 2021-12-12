@@ -25,11 +25,13 @@ class GameScreen():
         sg.theme('Black')
         self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-")]]
         self.col2 = [
+            [sg.Text("Health: " + str(self.enemy.health), key = '-enemyhealth-')],
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("Enemy Action", key = '-enemyevent-')],
             [sg.Text("Welcome to the game!", key = '-outcome-')],
             [sg.Text("Your Action", key = '-playerevent-')],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
+            [sg.Text("Health: " + str(self.player.health), key = '-playerhealth-')],
             self.healthBar("US",self.player.health),#5
             [sg.Button("Reload", key = '-action-')],
             [sg.Button('Block', key = '-block-')]
@@ -108,6 +110,7 @@ class GameScreen():
             self.player.health -= 1
             self.player.score -= 10
             self.window['-score-'].Update("Score: " + str(self.player.score))
+            self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
             self.col2[5] = self.healthBar("US",self.player.health)
 
     def hit(self):
@@ -127,6 +130,7 @@ class GameScreen():
             self.enemy.health -= 1
             self.player.score += 10
             self.window['-score-'].Update("Score: " + str(self.player.score))
+            self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
             self.col2[0] = self.healthBar("EN",self.enemy.health)
 
 
@@ -155,6 +159,8 @@ class GameScreen():
                 self.window['-outcome-'].Update("Both of you reloaded!")
             elif self.enemy.armed == False and self.player.armed == False: #both are reloading
                 self.window['-outcome-'].Update("Both of you are hit!")
+                self.hit()
+                self.getHit()
             else:
                 self.window['-outcome-'].Update("")
 
