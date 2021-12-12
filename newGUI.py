@@ -1,59 +1,90 @@
 import PySimpleGUI as sg
+import random
 from PIL import Image
 import io
-
 
 class Enemy():
     def __init__(self, path):
         self.health = 4
         self.path = path
+        self.armed = False
+        self.block_tedency = 4
+        self.block = False;
 
-def healthBar(character, health):
-    data = []
-    for i in range(4):
-        if i < health:
-            data.append(sg.Image(character+"_FULL.png"))
-        else:
-            data.append(sg.Image(character+"_EMPTY.png"))
-    return data
+class Player():
+    def __init__(self):
+        self.health = 4
+        self.armed = False
+        self.block = False;
 
-def gameScreen():
-    sg.theme('Black')
-    armed = False
-    events = ("You get hit!", "You attack!", "You reload!", "You block!", "They get hit!", "They attack!", "They reload!", "They block!")
-    e = Enemy("out.gif")
-    enemy = Image.open(e.path)
-    bioE = io.BytesIO()
-    enemy.save(bioE, format = "GIF")
-    col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('New Enemy')]]
-    col2 = [[sg.Text('Enemy')],
-    healthBar("EN",4),
-    [sg.Text(events[0], key = '-event-')],
-    [sg.Text('You')],
-    healthBar("US",4),
-    [sg.Button("Reload", key = '-action-')],
-    [sg.Button('Block', key = '-block-')]]
+class GameScreen():
+    def __init__(self):
+        sg.theme('Black')
+        self.events = ("You get hit!", "You attack!", "You reload!", "You block!", "They get hit!", "They attack!", "They reload!", "They block!")
+        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('New Enemy', disabled=True)]]
+        self.col2 = [[sg.Text('Enemy')],
+        [sg.Text(self.events[0], key = '-event-')],
+        [sg.Text('You')],
+        [sg.Button("Reload", key = '-action-')],
+        [sg.Button('Block', key = '-block-')]]
+        self.layout = [[sg.Column(self.col1)], [sg.Column(self.col2)]]
+        self.window = sg.Window('Window Title', self.layout, finalize = True)
+        self.player = Player()
+        self.enemy = Enemy("out.gif")
+        self.healthBar("EN",4),
+        self.healthBar("US",4),
+        self.loop()
 
-    layout = [[sg.Column(col1)], [sg.Column(col2)]]
-    window = sg.Window('Window Title', layout, finalize = True)
+    def healthBar(self, character, health):
+        data = []
+        for i in range(4):
+            if i < health:
+                data.append(sg.Image(character+"_FULL.png"))
+            else:
+                data.append(sg.Image(character+"_EMPTY.png"))
+        return data
 
-    while True:
-        event, values = window.read(timeout=100)
-        if event == sg.WIN_CLOSED:
-            break
+    def loop(self):
+        while True:
+            event, values = self.window.read(timeout = 100)
+            if event == sg.WIN_CLOSED:
+                break
+            else:
+                self.playerAction(event)
+                self.enemyAction()
+                #self.contest()
+            self.window.Element('-IMAGE-').update_animation_no_buffering(self.enemy.path)
+
+        window.close()
+
+    def playerAction(self, event):
         if event == '-action-':
-            if armed == False:
-                window['-action-'].Update("Attack")
-                armed = True
-            elif armed == True:
-                window['-action-'].Update("Reload")
-                armed = False
-        if event == "New Enemy":
-            window["-IMAGE-"].update(data=bioE.getvalue())
-        window.Element('-IMAGE-').update_animation_no_buffering(e.path)
+            self.player.block = False
+            if self.player.armed == False:
+                self.window['-action-'].Update("Attack")
+                self.window['-event-'].Update(self.events[2])
+                self.player.armed = True
+            elif self.player.armed == True:
+                self.window['-action-'].Update("Reload")
+                self.window['-event-'].Update(self.events[1])
+                self.player.armed = False
+        elif event == '-block-':
+            self.player.block = True
 
-    window.close()
+
+    def enemyAction(self):
+        action = random.randrange(self.enemy.block_tedency)
+        if action == self.enemy.block_tedency:
+            self.window['-event-'].Update(self.events[7])
+            self.enemy.block = True
+        else:
+            self.enemy.block = False
+            if self.enemy.armed == False:
+                self.window['-event-'].Update(self.events[6])
+                self.enemy.armed = True
+            else:
+                self.window['-event-'].Update(self.events[5])
+                self.enemy.armed = True
 
 
-
-gameScreen()
+g = GameScreen()

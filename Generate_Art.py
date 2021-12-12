@@ -124,4 +124,4 @@ def start_generator(num):
 
     createGIF(images)
 
-start_generator(10)
+start_generator(3)
