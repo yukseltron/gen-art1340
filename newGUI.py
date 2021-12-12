@@ -37,16 +37,14 @@ class GameScreen():
             [sg.Button('Block', key = '-block-')]
         ]
         self.layout = [[sg.Column(self.col1)], [sg.Column(self.col2)]]
-        self.window = sg.Window('Window Title', self.layout, finalize = True)
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
         self.loop()
 
     def healthBar(self, character, health):
         data = []
         for i in range(4):
             if i < health:
-                data.append(sg.Image(character+"_FULL.png"))
-            else:
-                data.append(sg.Image(character+"_EMPTY.png"))
+                data.append(sg.Image(character+"_FULL.png", key = "-" + character + "hbar" + str(i) + "-"))
         return data
 
     def loop(self):
@@ -99,24 +97,22 @@ class GameScreen():
             self.player.health -= 1
             self.player.score -= 50
             self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
+            self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
             self.window['-outcome-'].Update("You lose! Game Over -50\nFinal Score:" + str(self.player.score))
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-nextenemy-'].Update("Play again?")
             self.window['-action-'].Update(disabled = True)
             self.window['-block-'].Update(disabled = True)
-            self.player.armed = None
             self.player.block = None
-            self.enemy.armed = None
             self.enemy.block = None
         else:
             self.player.health -= 1
             self.player.score -= 10
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
-            self.col2[5] = self.healthBar("US",self.player.health)
-            self.player.armed = None
+            self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
+            self.playerHbar = self.healthBar("US",self.player.health)
             self.player.block = None
-            self.enemy.armed = None
             self.enemy.block = None
 
     def enemyHit(self):
@@ -124,32 +120,35 @@ class GameScreen():
             self.enemy.health -= 1
             self.player.score += 20
             self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
+            self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
             self.window['-outcome-'].Update("You won! +20\nCurrent score: " + str(self.player.score))
             self.window['-nextenemy-'].Update(disabled = False)
             self.window['-nextenemy-'].Update("Next enemy?")
             self.window['-action-'].Update(disabled = True)
             self.window['-block-'].Update(disabled = True)
             self.window['-score-'].Update("Score: " + str(self.player.score))
-            self.player.armed = None
             self.player.block = None
-            self.enemy.armed = None
             self.enemy.block = None
         else:
             self.enemy.health -= 1
             self.player.score += 10
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
-            self.col2[0] = self.healthBar("EN",self.enemy.health)
-            self.player.armed = None
+            self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
             self.player.block = None
-            self.enemy.armed = None
             self.enemy.block = None
 
     def bothHit(self):
         if self.player.health - 1 == 0:
-            self.playerHit()
             self.enemy.health -= 1
             self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
+            self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
+            self.playerHit()
+        elif self.enemy.health - 1 == 0:
+            self.player.health -= 1
+            self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
+            self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
+            self.enemyHit()
         else:
             self.enemyHit()
             self.playerHit()
