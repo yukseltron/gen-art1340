@@ -29,16 +29,18 @@ class GameScreen():
         self.col2 = [
             [sg.Text("Health: " + str(self.enemy.health), key = '-enemyhealth-')],
             self.healthBar("EN",self.enemy.health),#0
+            [sg.Text("\n\n")],
             [sg.Text("Enemy Action", key = '-enemyevent-')],
-            [sg.Text("Welcome to the game!", key = '-outcome-')],
+            [sg.Text("----------"), sg.Text("Welcome to the game!", key = '-outcome-')],
             [sg.Text("Your Action", key = '-playerevent-')],
+            [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
             [sg.Text("Health: " + str(self.player.health), key = '-playerhealth-')],
             self.healthBar("US",self.player.health),#5
             [sg.Button("Reload", key = '-action-')],
             [sg.Button('Block', key = '-block-')]
         ]
-        self.layout = [[sg.Column(self.col1)], [sg.Column(self.col2)]]
+        self.layout = [[sg.Column(self.col1), sg.Column(self.col2)]]
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
         self.loop()
 
@@ -57,16 +59,18 @@ class GameScreen():
         self.col2 = [
             [sg.Text("Health: " + str(self.enemy.health), key = '-enemyhealth-')],
             self.healthBar("EN",self.enemy.health),#0
+            [sg.Text("\n\n")],
             [sg.Text("Enemy Action", key = '-enemyevent-')],
-            [sg.Text("Welcome to the game!", key = '-outcome-')],
+            [sg.Text("----------"), sg.Text("Welcome to the game!", key = '-outcome-')],
             [sg.Text("Your Action", key = '-playerevent-')],
+            [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
             [sg.Text("Health: " + str(self.player.health), key = '-playerhealth-')],
             self.healthBar("US",self.player.health),#5
             [sg.Button("Reload", key = '-action-')],
             [sg.Button('Block', key = '-block-')]
         ]
-        self.layout = [[sg.Column(self.col1)], [sg.Column(self.col2)]]
+        self.layout = [[sg.Column(self.col1), sg.Column(self.col2)]]
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
         self.loop()
 
@@ -78,19 +82,20 @@ class GameScreen():
         return data
 
     def loop(self):
-        event, values = self.window.read(timeout = 100)
-        self.window.Element('-IMAGE-').update_animation_no_buffering(self.enemy.path)
-        if event == sg.WIN_CLOSED:
-            self.window.close()
-        elif event == '-nextenemy-':
-            self.reset()
-        else:
-            if self.player.armed == None:
-                self.player.armed = False
-                self.enemy.armed = False
-                self.enemy.block = False
-            self.contest(event)
-            self.loop()
+        while True:
+            event, values = self.window.read(timeout = 100)
+            self.window.Element('-IMAGE-').update_animation_no_buffering(self.enemy.path)
+            if event == sg.WIN_CLOSED:
+                self.window.close()
+            elif event == '-nextenemy-':
+                self.window.close()
+                self.reset()
+            else:
+                if self.player.armed == None:
+                    self.player.armed = False
+                    self.enemy.armed = False
+                    self.enemy.block = False
+                self.contest(event)
 
     def playerAction(self, event):
         if event == '-action-':
