@@ -1,11 +1,41 @@
 # Import all necessary libraries
 from PIL import Image, ImageDraw, ImageChops
+import PySimpleGUI as sg
 import random
 import colorsys
 import os
+import RNGHash as rng
+
+
+random.seed = rng.getHash("Game.py")
+
+def changeSeedWindow():
+    sg.theme('Black')
+    layout = [
+        [sg.Text("Specify the file for generating the random seed for the enemy art.\nAny file can be used!")],
+        [sg.Text("File", size =(15, 1)), sg.InputText(do_not_clear=False)],
+        [sg.Text("", key = "-warning-", text_color = "red")],
+        [sg.Submit()]
+    ]
+    window = sg.Window("Change Seed File", layout, modal=True)
+    choice = None
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED:
+            window.close()
+            break
+        file = values[0]
+        try:
+            random.seed = rng.getHash(file)
+            window.close()
+            break
+        except:
+            window['-warning-'].Update("File could not be found, please try inputting the path again.")
+            continue
 
 # Define a function to generate a random colour
 def random_color():
+    print(random.seed)
     h = random.random()
     s = 1
     v = 1

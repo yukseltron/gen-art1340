@@ -10,7 +10,7 @@ import hashlib
 import random
 
 #create function to generate a seed from file hash
-def hash_file_seed(filename):
+def getHash(filename):
 
    # make a hash object
    h = hashlib.sha1()

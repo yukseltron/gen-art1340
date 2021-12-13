@@ -3,6 +3,7 @@ import random
 from PIL import Image
 import io
 import GenerateArt as gen
+import RNGHash as rng
 
 
 ttk_style = 'clam'
@@ -58,8 +59,8 @@ class GameScreen():
             [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
             self.healthBar("US",self.player.health),#5
-            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True)],
-            [sg.Button('Block', key = '-block-', use_ttk_buttons=True)]
+            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True), sg.Button('Block', key = '-block-', use_ttk_buttons=True)],
+            [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
         self.layout = [[sg.Column(self.col1, size=(300, 400), element_justification='center'), sg.Column(self.col2, size=(200, 400))]]
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
@@ -88,8 +89,8 @@ class GameScreen():
             [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
             self.healthBar("US",self.player.health),#5
-            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True)],
-            [sg.Button('Block', key = '-block-', use_ttk_buttons=True)]
+            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True), sg.Button('Block', key = '-block-', use_ttk_buttons=True)],
+            [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
         self.layout = [[sg.Column(self.col1, size=(300, 400), element_justification='center'), sg.Column(self.col2, size=(200, 400))]]
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
@@ -111,6 +112,8 @@ class GameScreen():
             elif event == '-nextenemy-':
                 self.window.close()
                 self.reset()
+            elif event == '-seed-':
+                gen.changeSeedWindow()
             else:
                 if self.player.armed == None:
                     self.player.armed = False
