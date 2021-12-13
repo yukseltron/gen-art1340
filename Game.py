@@ -64,12 +64,12 @@ class GameScreen():
                      [sg.Image(key = "-IMAGE-")],
                      [sg.Text(self.enemy.name.capitalize(), font='sans-serif 20')],
                      [sg.Text(self.enemy.quote, font='sans-serif 12 italic')],
-                     [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
+                     [sg.Button('  ', disabled = True, key ="-nextenemy-", visible=False, use_ttk_buttons=True)]]
         self.col2 = [
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("\n\n")],
             [sg.Text("Enemy Action", key = '-enemyevent-', font='sans-serif 15', text_color = "red")],
-            [sg.Text("----------"), sg.Text("Welcome to the game!", key = '-outcome-', font='sans-serif 15')],
+            [sg.Text("----------"), sg.Text("Defeat " + self.enemy.name.capitalize(), key = '-outcome-', font='sans-serif 15')],
             [sg.Text("Your Action", key = '-playerevent-', font='sans-serif 15', text_color = "#00FF48")],
             [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-', font='sans-serif 15')],
@@ -78,7 +78,7 @@ class GameScreen():
             [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
         self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(350, 400))]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(700, 400), ttk_theme=ttk_style)
+        self.window = sg.Window('Shotgun Art Game', self.layout, finalize = True, size=(700, 400), ttk_theme=ttk_style)
         self.loop()
 
     def healthBar(self, character, health):
@@ -91,7 +91,7 @@ class GameScreen():
     def loop(self):
         while True:
             event, values = self.window.read(timeout = 100)
-            self.window.Element('-IMAGE-').update_animation_no_buffering(self.enemy.path)
+            self.window.Element('-IMAGE-').update_animation(self.enemy.path, time_between_frames=200)
             if event == sg.WIN_CLOSED:
                 self.window.close()
             elif event == '-nextenemy-':
@@ -147,6 +147,7 @@ class GameScreen():
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-nextenemy-'].Update("Play again?")
             self.window['-nextenemy-'].Update(disabled = False)
+            self.window['-nextenemy-'].Update(visible = True)
             self.window['-action-'].Update(disabled = True)
             self.window['-block-'].Update(disabled = True)
             self.player.block = None
@@ -167,6 +168,7 @@ class GameScreen():
             self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
             self.window['-outcome-'].Update("💪 You won! +20\nCurrent score: " + str(self.player.score))
             self.window['-nextenemy-'].Update(disabled = False)
+            self.window['-nextenemy-'].Update(visible = True)
             self.window['-nextenemy-'].Update("Next enemy?")
             self.window['-action-'].Update(disabled = True)
             self.window['-block-'].Update(disabled = True)

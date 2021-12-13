@@ -138,7 +138,7 @@ def createGIF(images):
         open_images.append(img)
 
     img = Image.open(images[0]+".png")
-    img.save("out.gif", save_all=True, append_images=open_images, disposal=2, loop=0, duration=200)
+    img.save("out.gif", save_all=True, append_images=open_images, disposal=2, loop=0, duration=2000)
 
     for i in images:
         os.remove(i+".png")
@@ -148,7 +148,7 @@ def start_generator(num):
     images = []
     for i in range(num):
         path = "Test_Image_"+str(i)
-        lines = (i + 2) * 5
+        lines = (i + 2) * random.randrange(num,10)
         generate_art(path+".png", 250, 2, lines)
         images.append(path)
 
