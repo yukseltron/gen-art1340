@@ -2,6 +2,7 @@
 from PIL import Image, ImageDraw, ImageChops
 import PySimpleGUI as sg
 import random
+import math
 import colorsys
 import os
 import RNGHash as rng
@@ -123,7 +124,19 @@ def generate_art(path, target_size_px, scale_factor, lines):
         color_factor = i / n_points
         line_color = interpolate(start_color, end_color, color_factor)
         thickness += scale_factor
-        overlay_draw.line(line_xy, fill=line_color, width=thickness)
+        s = random.randrange(5)
+        if s == 0:
+            overlay_draw.ellipse(line_xy, fill=line_color, width=thickness)
+        elif s == 1:
+            overlay_draw.line(line_xy, fill=line_color, width=thickness)
+        elif s == 2:
+            overlay_draw.chord(line_xy, 5, 10, fill=None, outline=line_color, width=thickness)
+        elif s == 3:
+            overlay_draw.pieslice(line_xy, random.randrange(10,300), random.randrange(10,300), fill=line_color, width=thickness)
+        elif s == 4:
+            overlay_draw.arc(line_xy, random.randrange(3,10), random.randrange(3,10), fill=line_color, width=thickness)
+        else:
+            overlay_draw.polygon(line_xy, fill=line_color)
         image = ImageChops.add(image, overlay_image)
 
     image = image.resize((target_size_px, target_size_px))
@@ -148,7 +161,7 @@ def start_generator(num):
     images = []
     for i in range(num):
         path = "Test_Image_"+str(i)
-        lines = (i + 2) * random.randrange(num,10)
+        lines = (i + 2) * random.randrange(num,20)
         generate_art(path+".png", 250, 2, lines)
         images.append(path)
 
