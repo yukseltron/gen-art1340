@@ -119,7 +119,7 @@ def start_generator(num):
     for i in range(num):
         path = "Test_Image_"+str(i)
         lines = (i + 2) * 5
-        generate_art(path+".png", 120, 2, lines)
+        generate_art(path+".png", 250, 2, lines)
         images.append(path)
 
     createGIF(images)

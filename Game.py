@@ -4,6 +4,9 @@ from PIL import Image
 import io
 import GenerateArt as gen
 
+
+ttk_style = 'clam'
+
 class Enemy():
     def __init__(self, path):
         self.health = 4
@@ -25,9 +28,8 @@ class GameScreen():
         gen.start_generator(2)
         self.enemy = Enemy("out.gif")
         sg.theme('Black')
-        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-")]]
+        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
         self.col2 = [
-            [sg.Text("Health: " + str(self.enemy.health), key = '-enemyhealth-')],
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("\n\n")],
             [sg.Text("Enemy Action", key = '-enemyevent-')],
@@ -35,13 +37,12 @@ class GameScreen():
             [sg.Text("Your Action", key = '-playerevent-')],
             [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
-            [sg.Text("Health: " + str(self.player.health), key = '-playerhealth-')],
             self.healthBar("US",self.player.health),#5
-            [sg.Button("Reload", key = '-action-')],
-            [sg.Button('Block', key = '-block-')]
+            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True)],
+            [sg.Button('Block', key = '-block-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1), sg.Column(self.col2)]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
+        self.layout = [[sg.Column(self.col1, size=(300, 400)), sg.Column(self.col2, size=(200, 400))]]
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
         self.loop()
 
     def reset(self):
@@ -55,9 +56,8 @@ class GameScreen():
         gen.start_generator(2)
         self.enemy = Enemy("out.gif")
         sg.theme('Black')
-        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-")]]
+        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
         self.col2 = [
-            [sg.Text("Health: " + str(self.enemy.health), key = '-enemyhealth-')],
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("\n\n")],
             [sg.Text("Enemy Action", key = '-enemyevent-')],
@@ -65,13 +65,12 @@ class GameScreen():
             [sg.Text("Your Action", key = '-playerevent-')],
             [sg.Text("\n\n")],
             [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
-            [sg.Text("Health: " + str(self.player.health), key = '-playerhealth-')],
             self.healthBar("US",self.player.health),#5
-            [sg.Button("Reload", key = '-action-')],
-            [sg.Button('Block', key = '-block-')]
+            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True)],
+            [sg.Button('Block', key = '-block-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1), sg.Column(self.col2)]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True)
+        self.layout = [[sg.Column(self.col1, size=(300, 400)), sg.Column(self.col2, size=(200, 400))]]
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
         self.loop()
 
     def healthBar(self, character, health):
@@ -133,7 +132,6 @@ class GameScreen():
         if self.player.health - 1 == 0:
             self.player.health -= 1
             self.player.score -= 50
-            self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
             self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
             self.window['-outcome-'].Update("You lose! Game Over -50\nFinal Score:" + str(self.player.score))
             self.window['-score-'].Update("Score: " + str(self.player.score))
@@ -147,7 +145,6 @@ class GameScreen():
             self.player.health -= 1
             self.player.score -= 10
             self.window['-score-'].Update("Score: " + str(self.player.score))
-            self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
             self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
             self.playerHbar = self.healthBar("US",self.player.health)
             self.player.block = None
@@ -157,7 +154,6 @@ class GameScreen():
         if self.enemy.health - 1 == 0:
             self.enemy.health -= 1
             self.player.score += 20
-            self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
             self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
             self.window['-outcome-'].Update("You won! +20\nCurrent score: " + str(self.player.score))
             self.window['-nextenemy-'].Update(disabled = False)
@@ -171,7 +167,6 @@ class GameScreen():
             self.enemy.health -= 1
             self.player.score += 10
             self.window['-score-'].Update("Score: " + str(self.player.score))
-            self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
             self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
             self.player.block = None
             self.enemy.block = None
@@ -179,12 +174,10 @@ class GameScreen():
     def bothHit(self):
         if self.player.health - 1 == 0:
             self.enemy.health -= 1
-            self.window['-enemyhealth-'].Update("Health: " + str(self.enemy.health))
             self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
             self.playerHit()
         elif self.enemy.health - 1 == 0:
             self.player.health -= 1
-            self.window['-playerhealth-'].Update("Health: " + str(self.player.health))
             self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
             self.enemyHit()
         else:
