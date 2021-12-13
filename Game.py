@@ -2,7 +2,8 @@ import PySimpleGUI as sg
 import random
 from PIL import Image
 import io
-import GenerateArt as gen
+import GenerateArt as gna
+import GenerateText as gnt
 import RNGHash as rng
 
 
@@ -16,6 +17,7 @@ class Enemy():
         self.armed = None
         self.block_tedency = random.randrange(2,10)
         self.block = None;
+        self.quote = gnt.getRandText() + "\n\n"
 
     def randomName(self):
         name = ""
@@ -44,29 +46,11 @@ class Player():
 class GameScreen():
     def __init__(self):
         self.player = Player()
-        gen.start_generator(2)
         self.enemy = Enemy("out.gif")
-        sg.theme('Black')
-        self.col1 = [[sg.Text("Defeat " + self.enemy.name.capitalize())],
-                     [sg.Image(key = "-IMAGE-")],
-                     [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
-        self.col2 = [
-            self.healthBar("EN",self.enemy.health),#0
-            [sg.Text("\n\n")],
-            [sg.Text("Enemy Action", key = '-enemyevent-')],
-            [sg.Text("----------"), sg.Text("Welcome to the game!", key = '-outcome-')],
-            [sg.Text("Your Action", key = '-playerevent-')],
-            [sg.Text("\n\n")],
-            [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
-            self.healthBar("US",self.player.health),#5
-            [sg.Button("Reload", key = '-action-', use_ttk_buttons=True), sg.Button('Block', key = '-block-', use_ttk_buttons=True)],
-            [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
-        ]
-        self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(250, 400))]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(600, 400), ttk_theme=ttk_style)
-        self.loop()
+        self.reset()
 
     def reset(self):
+        self.enemy = Enemy("out.gif")
         if self.player.health == 0:
             self.player = Player()
         else:
@@ -74,26 +58,27 @@ class GameScreen():
             self.player = Player()
             self.player.score = score
 
-        gen.start_generator(2)
-        self.enemy = Enemy("out.gif")
+        gna.start_generator(2)
         sg.theme('Black')
-        self.col1 = [[sg.Text("Defeat " + self.enemy.name.capitalize())],
+        self.col1 = [
                      [sg.Image(key = "-IMAGE-")],
+                     [sg.Text(self.enemy.name.capitalize(), font='sans-serif 20')],
+                     [sg.Text(self.enemy.quote, font='sans-serif 12 italic')],
                      [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
         self.col2 = [
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("\n\n")],
-            [sg.Text("Enemy Action", key = '-enemyevent-')],
-            [sg.Text("----------"), sg.Text("Welcome to the game!", key = '-outcome-')],
-            [sg.Text("Your Action", key = '-playerevent-')],
+            [sg.Text("Enemy Action", key = '-enemyevent-', font='sans-serif 15', text_color = "red")],
+            [sg.Text("----------"), sg.Text("Welcome to the game!", key = '-outcome-', font='sans-serif 15')],
+            [sg.Text("Your Action", key = '-playerevent-', font='sans-serif 15', text_color = "#00FF48")],
             [sg.Text("\n\n")],
-            [sg.Text('Score: ' + str(self.player.score), key = '-score-')],
+            [sg.Text('Score: ' + str(self.player.score), key = '-score-', font='sans-serif 15')],
             self.healthBar("US",self.player.health),#5
             [sg.Button("Reload", key = '-action-', use_ttk_buttons=True), sg.Button('Block', key = '-block-', use_ttk_buttons=True)],
             [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(250, 400))]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(600, 400), ttk_theme=ttk_style)
+        self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(350, 400))]]
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(700, 400), ttk_theme=ttk_style)
         self.loop()
 
     def healthBar(self, character, health):
@@ -113,7 +98,7 @@ class GameScreen():
                 self.window.close()
                 self.reset()
             elif event == '-seed-':
-                gen.changeSeedWindow()
+                gna.changeSeedWindow()
             else:
                 if self.player.armed == None:
                     self.player.armed = False
