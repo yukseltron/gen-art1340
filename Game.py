@@ -10,10 +10,28 @@ ttk_style = 'clam'
 class Enemy():
     def __init__(self, path):
         self.health = 4
+        self.name = self.randomName()
         self.path = path
         self.armed = None
-        self.block_tedency = 4
+        self.block_tedency = random.randrange(2,10)
         self.block = None;
+
+    def randomName(self):
+        name = ""
+        consonants = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','y','z']
+        vowels = ['a','e','i','o','u']
+
+        nameLength = random.randrange(3,10)
+        for i in range(nameLength):
+            odds = random.randrange(1,100)
+            if odds % 2 == 0:
+                name += consonants[random.randrange(len(consonants))]
+            else:
+                name += vowels[random.randrange(len(vowels))]
+
+        return name
+
+
 
 class Player():
     def __init__(self):
@@ -28,7 +46,9 @@ class GameScreen():
         gen.start_generator(2)
         self.enemy = Enemy("out.gif")
         sg.theme('Black')
-        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
+        self.col1 = [[sg.Text("Defeat " + self.enemy.name.capitalize())],
+                     [sg.Image(key = "-IMAGE-")],
+                     [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
         self.col2 = [
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("\n\n")],
@@ -41,7 +61,7 @@ class GameScreen():
             [sg.Button("Reload", key = '-action-', use_ttk_buttons=True)],
             [sg.Button('Block', key = '-block-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1, size=(300, 400)), sg.Column(self.col2, size=(200, 400))]]
+        self.layout = [[sg.Column(self.col1, size=(300, 400), element_justification='center'), sg.Column(self.col2, size=(200, 400))]]
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
         self.loop()
 
@@ -56,7 +76,9 @@ class GameScreen():
         gen.start_generator(2)
         self.enemy = Enemy("out.gif")
         sg.theme('Black')
-        self.col1 = [[sg.Image(key = "-IMAGE-")], [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
+        self.col1 = [[sg.Text("Defeat " + self.enemy.name.capitalize())],
+                     [sg.Image(key = "-IMAGE-")],
+                     [sg.Button('  ', disabled = True, key ="-nextenemy-", use_ttk_buttons=True)]]
         self.col2 = [
             self.healthBar("EN",self.enemy.health),#0
             [sg.Text("\n\n")],
@@ -69,7 +91,7 @@ class GameScreen():
             [sg.Button("Reload", key = '-action-', use_ttk_buttons=True)],
             [sg.Button('Block', key = '-block-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1, size=(300, 400)), sg.Column(self.col2, size=(200, 400))]]
+        self.layout = [[sg.Column(self.col1, size=(300, 400), element_justification='center'), sg.Column(self.col2, size=(200, 400))]]
         self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
         self.loop()
 
