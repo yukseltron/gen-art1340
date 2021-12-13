@@ -72,13 +72,11 @@ def convertImage(path):
     img.save(path, "PNG")
 
 # Define the main function
-def generate_art(path, target_size_px, scale_factor, lines):
+def generate_art(path, target_size_px, scale_factor, lines, start_color, end_color):
     print("Generating Art!")  # This line of code clarifies that the function is active / has been executed properly
     image_size_px = target_size_px * scale_factor # Set image size
     padding_px = 16 * scale_factor # Pad the image
     image_bg_color = (0, 0, 0) # Set the background to black
-    start_color = random_color()
-    end_color = random_color()
     image = Image.new(
         "RGB", size=(image_size_px, image_size_px),
                 color=image_bg_color)
@@ -123,20 +121,10 @@ def generate_art(path, target_size_px, scale_factor, lines):
         line_xy = (p1, p2)
         color_factor = i / n_points
         line_color = interpolate(start_color, end_color, color_factor)
-        thickness += scale_factor
-        s = random.randrange(5)
-        if s == 0:
-            overlay_draw.ellipse(line_xy, fill=line_color, width=thickness)
-        elif s == 1:
-            overlay_draw.line(line_xy, fill=line_color, width=thickness)
-        elif s == 2:
-            overlay_draw.chord(line_xy, 5, 10, fill=None, outline=line_color, width=thickness)
-        elif s == 3:
-            overlay_draw.pieslice(line_xy, random.randrange(10,300), random.randrange(10,300), fill=line_color, width=thickness)
-        elif s == 4:
-            overlay_draw.arc(line_xy, random.randrange(3,10), random.randrange(3,10), fill=line_color, width=thickness)
-        else:
-            overlay_draw.polygon(line_xy, fill=line_color)
+        thickness = random.randrange(3,10)
+        s = random.randrange(1)
+        overlay_draw.line(line_xy, fill=line_color, width=thickness)
+        overlay_draw.arc(line_xy, random.randrange(3,100), random.randrange(3,100), fill=line_color, width=thickness)
         image = ImageChops.add(image, overlay_image)
 
     image = image.resize((target_size_px, target_size_px))
@@ -159,10 +147,12 @@ def createGIF(images):
 # This line of code generates ten randomly generated images
 def start_generator(num):
     images = []
+    start_color = random_color()
+    end_color = random_color()
     for i in range(num):
         path = "Test_Image_"+str(i)
         lines = (i + 2) * random.randrange(num,20)
-        generate_art(path+".png", 250, 2, lines)
+        generate_art(path+".png", 250, 2, lines, start_color, end_color)
         images.append(path)
 
     createGIF(images)
