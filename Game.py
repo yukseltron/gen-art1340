@@ -78,7 +78,7 @@ class GameScreen():
             [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
         self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(350, 400))]]
-        self.window = sg.Window('Shotgun Art Game', self.layout, finalize = True, size=(700, 400), ttk_theme=ttk_style)
+        self.window = sg.Window('Shotgun Art Game', self.layout, finalize = True, ttk_theme=ttk_style)
         self.loop()
 
     def healthBar(self, character, health):
@@ -94,6 +94,7 @@ class GameScreen():
             self.window.Element('-IMAGE-').update_animation(self.enemy.path, time_between_frames=200)
             if event == sg.WIN_CLOSED:
                 self.window.close()
+                break
             elif event == '-nextenemy-':
                 self.window.close()
                 self.reset()
