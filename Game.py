@@ -62,8 +62,8 @@ class GameScreen():
             [sg.Button("Reload", key = '-action-', use_ttk_buttons=True), sg.Button('Block', key = '-block-', use_ttk_buttons=True)],
             [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1, size=(300, 400), element_justification='center'), sg.Column(self.col2, size=(200, 400))]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
+        self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(250, 400))]]
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(600, 400), ttk_theme=ttk_style)
         self.loop()
 
     def reset(self):
@@ -92,8 +92,8 @@ class GameScreen():
             [sg.Button("Reload", key = '-action-', use_ttk_buttons=True), sg.Button('Block', key = '-block-', use_ttk_buttons=True)],
             [sg.Button('Change seed', key = '-seed-', use_ttk_buttons=True)]
         ]
-        self.layout = [[sg.Column(self.col1, size=(300, 400), element_justification='center'), sg.Column(self.col2, size=(200, 400))]]
-        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(500, 400), ttk_theme=ttk_style)
+        self.layout = [[sg.Column(self.col1, size=(350, 400), element_justification='center'), sg.Column(self.col2, size=(250, 400))]]
+        self.window = sg.Window('Shot Art Game', self.layout, finalize = True, size=(600, 400), ttk_theme=ttk_style)
         self.loop()
 
     def healthBar(self, character, health):
@@ -126,31 +126,31 @@ class GameScreen():
             self.player.block = False
             if self.player.armed == False:
                 self.window['-action-'].Update("Attack")
-                self.window['-playerevent-'].Update("You reloaded!")
+                self.window['-playerevent-'].Update("♻️ You reloaded!")
                 self.player.armed = True
                 self.enemyAction()
             elif self.player.armed == True:
                 self.window['-action-'].Update("Reload")
-                self.window['-playerevent-'].Update("You attacked!")
+                self.window['-playerevent-'].Update("⚔️ You attacked!")
                 self.player.armed = False
                 self.enemyAction()
         elif event == '-block-':
             self.player.block = True
-            self.window['-playerevent-'].Update("You blocked!")
+            self.window['-playerevent-'].Update("🛡 You blocked!")
             self.enemyAction()
 
     def enemyAction(self):
         action = random.randrange(1,self.enemy.block_tedency+1)
         if action == self.enemy.block_tedency:
-            self.window['-enemyevent-'].Update("Enemy blocked!")
+            self.window['-enemyevent-'].Update("🛡 Enemy blocked!")
             self.enemy.block = True
         else:
             self.enemy.block = False
             if self.enemy.armed == False:
-                self.window['-enemyevent-'].Update("Enemy reloaded!")
+                self.window['-enemyevent-'].Update("♻️ Enemy reloaded!")
                 self.enemy.armed = True
             else:
-                self.window['-enemyevent-'].Update("Enemy attacked!")
+                self.window['-enemyevent-'].Update("⚔️ Enemy attacked!")
                 self.enemy.armed = False
 
     def playerHit(self):
@@ -158,7 +158,7 @@ class GameScreen():
             self.player.health -= 1
             self.player.score -= 50
             self.window['-UShbar' + str(self.player.health) +'-'].Update("US_EMPTY.png")
-            self.window['-outcome-'].Update("You lose! Game Over -50\nFinal Score:" + str(self.player.score))
+            self.window['-outcome-'].Update("😭 You lose! Game Over -50\nFinal Score:" + str(self.player.score))
             self.window['-score-'].Update("Score: " + str(self.player.score))
             self.window['-nextenemy-'].Update("Play again?")
             self.window['-nextenemy-'].Update(disabled = False)
@@ -180,7 +180,7 @@ class GameScreen():
             self.enemy.health -= 1
             self.player.score += 20
             self.window['-ENhbar' + str(self.enemy.health) +'-'].Update("EN_EMPTY.png")
-            self.window['-outcome-'].Update("You won! +20\nCurrent score: " + str(self.player.score))
+            self.window['-outcome-'].Update("💪 You won! +20\nCurrent score: " + str(self.player.score))
             self.window['-nextenemy-'].Update(disabled = False)
             self.window['-nextenemy-'].Update("Next enemy?")
             self.window['-action-'].Update(disabled = True)
@@ -213,28 +213,28 @@ class GameScreen():
     def contest(self, event):
         self.playerAction(event)
         if self.enemy.block == True and self.player.block == True: #both players block
-            self.window['-outcome-'].Update("Both of you blocked!")
+            self.window['-outcome-'].Update("🛡🛡 Both of you blocked!")
         elif self.enemy.block == True and self.player.block == False: #enemy blocks, player does not
             if self.player.armed == False: #player can't shoot
-                self.window['-outcome-'].Update("Enemy blocked the attack!")#must reload if not
+                self.window['-outcome-'].Update("🛡😈 Enemy blocked the attack!")#must reload if not
             else:#player can shoot
-                self.window['-outcome-'].Update("Nothing happened!")#enemy is blocking
+                self.window['-outcome-'].Update("😐👿 Nothing happened!")#enemy is blocking
         elif self.enemy.block == False and self.player.block == True: #enemy does not block, player does
             if self.enemy.armed == False: #enemy can't shoot
-                self.window['-outcome-'].Update("You blocked the attack!") #enemy reloads
+                self.window['-outcome-'].Update("😎🛡 You blocked the attack!") #enemy reloads
             else: #enemy can shoot
-                self.window['-outcome-'].Update("Nothing happened!") #player is blocking
+                self.window['-outcome-'].Update("😐👿 Nothing happened!") #player is blocking
         elif self.enemy.block == False and self.player.block == False: #neither block
             if self.enemy.armed == False and self.player.armed == True: #enemy is unarmed, player is armed
-                self.window['-outcome-'].Update("You are hit!") #enemy is hit
+                self.window['-outcome-'].Update("🤕💥 You are hit!") #enemy is hit
                 self.playerHit()
             elif self.enemy.armed == True and self.player.armed == False:
-                self.window['-outcome-'].Update("Enemy is hit!")
+                self.window['-outcome-'].Update("💥👿 Enemy is hit!")
                 self.enemyHit()
             elif self.enemy.armed == True and self.player.armed == True:
-                self.window['-outcome-'].Update("Both of you reloaded!")
+                self.window['-outcome-'].Update("♻️♻️ Both of you reloaded!")
             elif self.enemy.armed == False and self.player.armed == False: #both are reloading
-                self.window['-outcome-'].Update("Both of you are hit!")
+                self.window['-outcome-'].Update("💥💥 Both of you are hit!")
                 self.bothHit()
             else:
                 self.window['-outcome-'].Update("")
