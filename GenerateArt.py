@@ -125,12 +125,27 @@ def generate_art(path, target_size_px, scale_factor, lines, start_color, end_col
         s = random.randrange(1)
         overlay_draw.line(line_xy, fill=line_color, width=thickness)
         overlay_draw.arc(line_xy, random.randrange(3,100), random.randrange(3,100), fill=line_color, width=thickness)
-        overlay_draw.ellipse((125,200,225,300), fill=start_color)
-        overlay_draw.ellipse((150,225,200,275), fill="black")
-        overlay_draw.ellipse((275,200,375,300), fill=start_color)
-        overlay_draw.ellipse((300,225,350,275), fill="black")
-                #overlay_draw.ellipse((125,200,225,300), fill=start_color)
-                #overlay_draw.ellipse((275,50,375,100), fill=start_color)
+        eye1_x0 = random.randrange(110,140)
+        eye1_x1 = eye1_x0 + random.randrange(100)
+        eye1_y0 = random.randrange(185,215)
+        eye1_y1 = eye1_y0 + random.randrange(100)
+
+        eye2_x0 = random.randrange(260,290)
+        eye2_x1 = eye2_x0 + random.randrange(100)
+        eye2_y0 = random.randrange(185,215)
+        eye2_y1 = eye2_y0 + random.randrange(100)
+
+        type = random.randrange(2)
+        if type == 1:
+            overlay_draw.ellipse((eye1_x0,eye1_y0,eye1_x1,eye1_y1), fill=line_color)
+        else:
+            overlay_draw.rectangle((eye1_x0,eye1_y0,eye1_x1,eye1_y1), fill=line_color)
+        type = random.randrange(2)
+        if type == 1:
+            overlay_draw.ellipse((eye2_x0,eye2_y0,eye2_x1,eye2_y1),fill=line_color)
+        else:
+            overlay_draw.rectangle((eye2_x0,eye2_y0,eye2_x1,eye2_y1),fill=line_color)
+
         image = ImageChops.add(image, overlay_image)
 
     image = image.resize((target_size_px, target_size_px))
