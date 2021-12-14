@@ -9,6 +9,7 @@ import RNGHash as rng
 
 ttk_style = 'clam'
 
+#The enemy object
 class Enemy():
     def __init__(self):
         self.health = 4
@@ -19,6 +20,7 @@ class Enemy():
         self.block = None;
         self.quote = gnt.getRandText() + "\n\n"
 
+    #Enemy's random name
     def randomName(self):
         name = ""
         consonants = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','y','z']
@@ -35,7 +37,7 @@ class Enemy():
         return name
 
 
-
+#Player's object
 class Player():
     def __init__(self):
         self.health = 4
@@ -43,12 +45,14 @@ class Player():
         self.block = None
         self.score = 0
 
+#GUI
 class GameScreen():
     def __init__(self):
         self.player = Player()
         self.enemy = Enemy()
         self.reset()
 
+    #Resets GUI
     def reset(self):
         self.enemy = Enemy()
         if self.player.health == 0:
@@ -81,6 +85,7 @@ class GameScreen():
         self.window = sg.Window('Shotgun Art Game', self.layout, finalize = True, ttk_theme=ttk_style)
         self.loop()
 
+    #Healthbar
     def healthBar(self, character, health):
         data = []
         for i in range(4):
@@ -88,6 +93,7 @@ class GameScreen():
                 data.append(sg.Image(character+"_FULL.png", key = "-" + character + "hbar" + str(i) + "-"))
         return data
 
+    #Main game loop
     def loop(self):
         while True:
             event, values = self.window.read(timeout = 100)
@@ -107,6 +113,7 @@ class GameScreen():
                     self.enemy.block = False
                 self.contest(event)
 
+    #Player action logic
     def playerAction(self, event):
         if event == '-action-':
             self.player.block = False
@@ -125,6 +132,7 @@ class GameScreen():
             self.window['-playerevent-'].Update("🛡 You blocked!")
             self.enemyAction()
 
+    #Enemy action logic
     def enemyAction(self):
         action = random.randrange(1,self.enemy.block_tedency+1)
         if action == self.enemy.block_tedency:
@@ -139,6 +147,7 @@ class GameScreen():
                 self.window['-enemyevent-'].Update("⚔️ Enemy attacked!")
                 self.enemy.armed = False
 
+    #Logic for when player takes damage/loses game
     def playerHit(self):
         if self.player.health - 1 == 0:
             self.player.health -= 1
@@ -162,6 +171,7 @@ class GameScreen():
             self.player.block = None
             self.enemy.block = None
 
+    #Logic for when enemy takes damage/player winning
     def enemyHit(self):
         if self.enemy.health - 1 == 0:
             self.enemy.health -= 1
@@ -184,6 +194,7 @@ class GameScreen():
             self.player.block = None
             self.enemy.block = None
 
+    #Logic for when player and enemy get hit
     def bothHit(self):
         if self.player.health - 1 == 0:
             self.enemy.health -= 1
@@ -198,6 +209,7 @@ class GameScreen():
             self.playerHit()
 
 
+    #Decide outcome based on player and enemy moves
     def contest(self, event):
         self.playerAction(event)
         if self.enemy.block == True and self.player.block == True: #both players block

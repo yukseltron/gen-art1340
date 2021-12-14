@@ -10,6 +10,7 @@ import RNGHash as rng
 
 random.seed = rng.getHash("Game.py")
 
+# open GUI for changing seed file
 def changeSeedWindow():
     sg.theme('Black')
     layout = [
