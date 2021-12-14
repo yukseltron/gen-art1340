@@ -10,10 +10,10 @@ import RNGHash as rng
 ttk_style = 'clam'
 
 class Enemy():
-    def __init__(self, path):
+    def __init__(self):
         self.health = 4
         self.name = self.randomName()
-        self.path = path
+        self.path = "out.gif"
         self.armed = None
         self.block_tedency = random.randrange(2,10)
         self.block = None;
@@ -46,11 +46,11 @@ class Player():
 class GameScreen():
     def __init__(self):
         self.player = Player()
-        self.enemy = Enemy("out.gif")
+        self.enemy = Enemy()
         self.reset()
 
     def reset(self):
-        self.enemy = Enemy("out.gif")
+        self.enemy = Enemy()
         if self.player.health == 0:
             self.player = Player()
         else:
