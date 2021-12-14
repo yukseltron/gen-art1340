@@ -226,8 +226,3 @@ class GameScreen():
                 self.bothHit()
             else:
                 self.window['-outcome-'].Update("")
-
-
-
-
-g = GameScreen()
