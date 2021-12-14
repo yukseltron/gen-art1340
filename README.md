@@ -23,7 +23,7 @@ import Game
 g = Game.GameScreen()
 ```
 
-## Game rules
+## Game Features
 ### Combat
 You and your opponent both choose at the same time whether to attack/reload, or block.<br/>
 You need to first reload in order to be able to attack.<br/>
@@ -38,3 +38,9 @@ Block allows you to prevent getting hit by an attack. Your opponent can block to
 • Randomly generated colours<br/>
 • Randomly generated blocking tendency<br/>
 ```
+
+### Random File Seed Generation
+As a data project as well, if you click on `Change Seed` you get a popup modal with an input. Specify the path for the file you want to be parsed for generating the random seed.
+
+<img width="736" alt="Screen Shot 2021-12-13 at 7 08 53 PM" src="https://user-images.githubusercontent.com/14843458/145908982-ea5dc33d-0859-446d-8f55-48f4f0b4ea79.png">
+
