@@ -7,9 +7,7 @@ This is a generative art project turned into a game. The generative art (an exam
 #### Gameplay Preview
 ![g](https://user-images.githubusercontent.com/14843458/145907286-c17d8cf0-395d-48c1-81fb-14bf46611bf9.gif)
 
-## Execution instructions
-
-### Installations
+## Installations
 This program relies on two Python libraries: PySimpleGUI and Pillow.
 
 #### Installing PySimpleGUI
@@ -18,7 +16,7 @@ This program relies on two Python libraries: PySimpleGUI and Pillow.
 #### Installing Pillow
 `pip install Pillow`
 
-#### Starting the project
+## Running the project
 ```Python
 import Game
 
