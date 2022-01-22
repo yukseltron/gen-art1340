@@ -1,4 +1,4 @@
-# Shotgun Art Game
+# Scribbles Art Game
 ![out](https://user-images.githubusercontent.com/14843458/145906783-8a8322ca-afe9-4847-b321-45db912e5954.gif)
 
 ## Description
